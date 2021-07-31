@@ -5,7 +5,7 @@ Written a Custom Exception Class with HTTP Status as Not Found when the URL is n
 Delete:
 The delete API takes an URL as a parameter and delete the URL from database and return the deleted URL back to the user.
 
-The count API takes one Request parameter that is URL as string and call the helper method getUrl and if the URL exists it will delete the URL from database and return the deleted URL back to the user else it will throw RecordNotFoundException. 
+The count API takes one Request parameter that is URL as string and call findByUrl in the repository and if the URL exists it will delete the URL from database and return the deleted URL back to the user else it will throw RecordNotFoundException. 
 
 Sort:
 The sort API will return list of all URLs in JSON format.
