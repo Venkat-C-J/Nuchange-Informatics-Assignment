@@ -51,4 +51,11 @@ public class UrlController {
 
     }
     
+    @GetMapping("/count")
+    public int getUrlUsageCount(@RequestParam String url)
+                    							throws RecordNotFoundException {
+    	return service.getUrlUsageCount(url);
+
+    }
+    
 }

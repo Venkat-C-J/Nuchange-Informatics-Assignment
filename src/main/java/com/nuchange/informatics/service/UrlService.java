@@ -82,6 +82,7 @@ public class UrlService {
 		}
 	}
 
+	//method to save or update the url
 	public UrlEntity createOrUpdateUrl(UrlEntity entity) {
 		
 		Optional<UrlEntity> url = getUrl(entity.getUrl());
@@ -103,6 +104,7 @@ public class UrlService {
 		return newEntity;
 	}
 
+	//method to get the unique short key of the url
 	@Transactional
 	public int getUrlId(String theUrl) throws RecordNotFoundException{
 
@@ -130,4 +132,18 @@ public class UrlService {
 			throw new RecordNotFoundException("Url not found : " +theUrl);
 		}
 	}
+	
+	
+	public int getUrlUsageCount(String theUrl) throws RecordNotFoundException{
+		
+		//get the url and return the usage count
+		Optional<UrlEntity> url = getUrl(theUrl);
+		
+		if(url.isPresent()) {
+			return url.get().getUsageCount();
+		}else {
+			throw new RecordNotFoundException("Url not found : " +theUrl);
+		}
+	}
+	
 }
