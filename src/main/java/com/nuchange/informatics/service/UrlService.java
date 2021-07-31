@@ -5,17 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 import com.nuchange.informatics.exception.RecordNotFoundException;
 import com.nuchange.informatics.model.UrlEntity;
@@ -81,7 +82,7 @@ public class UrlService {
 		}
 	}
 
-	public UrlEntity createOrUpdateUrl(UrlEntity entity) throws RecordNotFoundException {
+	public UrlEntity createOrUpdateUrl(UrlEntity entity) {
 		
 		Optional<UrlEntity> url = getUrl(entity.getUrl());
 
@@ -102,4 +103,31 @@ public class UrlService {
 		return newEntity;
 	}
 
+	@Transactional
+	public int getUrlId(String theUrl) throws RecordNotFoundException{
+
+		//get current hibernate session
+		Session currentSession =
+				entitymanager.unwrap(Session.class);
+
+		//get the url
+		Optional<UrlEntity> url = getUrl(theUrl);
+
+		//if url exist return the unique short key after incrementing the usage count.
+		if(url.isPresent()) {
+						
+			@SuppressWarnings("rawtypes")
+			Query query=currentSession.
+					createQuery("UPDATE UrlEntity set usageCount =:usage WHERE url =:theUrl");
+			query.setParameter("usage", url.get().getUsageCount()+1);
+			query.setParameter("theUrl", theUrl);
+			query.executeUpdate();
+			
+			return url.get().getId(); 
+
+		}else {
+			
+			throw new RecordNotFoundException("Url not found : " +theUrl);
+		}
+	}
 }

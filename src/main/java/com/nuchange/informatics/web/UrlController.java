@@ -28,16 +28,27 @@ public class UrlController {
                         @RequestParam(defaultValue = "0") Integer page,
                         @RequestParam(defaultValue = "10") Integer size,
                         @RequestParam(defaultValue = "id") String sortBy) {
+    	
         List<UrlEntity> list = service.getAllUrls(page, size, sortBy);
  
-        return new ResponseEntity<List<UrlEntity>>(list, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<List<UrlEntity>>
+        						(list, new HttpHeaders(), HttpStatus.OK);
     }
     
     @PostMapping("/storeurl")
     public ResponseEntity<UrlEntity> createOrUpdateUrl(UrlEntity url)
-                                                    throws RecordNotFoundException {
+                                                 throws RecordNotFoundException {
+    	
     	UrlEntity updated = service.createOrUpdateUrl(url);
-        return new ResponseEntity<UrlEntity>(updated, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<UrlEntity>
+        					(updated, new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping("/get")
+    public int getUrlId(@RequestParam String url)
+                    							throws RecordNotFoundException {
+    	return service.getUrlId(url);
+
+    }
+    
 }
