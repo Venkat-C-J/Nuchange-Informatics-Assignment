@@ -1,0 +1,17 @@
+Additional Features to Rest API:
+Custom Exception:
+Written a Custom Exception Class with HTTP Status as Not Found when the URL is not found in the database when using count and get API’s.
+
+Delete:
+The delete API takes an URL as a parameter and delete the URL from database and return the deleted URL back to the user.
+
+The count API takes one Request parameter that is URL as string and call the helper method getUrl and if the URL exists it will delete the URL from database and return the deleted URL back to the user else it will throw RecordNotFoundException. 
+
+Sort:
+The sort API will return list of all URLs in JSON format.
+
+The sort API takes three Request parameters those are page, size, sortBy and pass those parameters to the getAllUrlsBySort method in service. The services there by uses this uses this parameter’s and create a Pageable object that in turn passes as a parameter to findAll method with pageable Object in the UrlRepository that in turn delegate the call to PagingAndSortingRepository which is one of the Spring Data Repository.
+
+
+
+

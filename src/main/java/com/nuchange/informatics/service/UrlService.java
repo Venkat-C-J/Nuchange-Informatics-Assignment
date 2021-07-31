@@ -66,7 +66,23 @@ public class UrlService {
 
 	}
 
-	public List<UrlEntity> getAllUrls(Integer pageNo, Integer pageSize, String sortBy) {
+	public List<UrlEntity> getAllUrls(Integer pageNo, Integer pageSize) {
+		
+		//create the Pageable object to pass as a parameter to findAll method
+		Pageable paging = PageRequest.of(pageNo, pageSize);
+
+		//call the findAll method with above Pageable object which will return Page<UrlEntity>
+		Page<UrlEntity> pagedResult = repository.findAll(paging);
+
+		//return the results
+		if(pagedResult.hasContent()) {
+			return pagedResult.getContent();
+		} else {
+			return new ArrayList<UrlEntity>();
+		}
+	}
+
+	public List<UrlEntity> getAllUrlsBySort(Integer pageNo, Integer pageSize, String sortBy) {
 		
 		//create the Pageable object to pass as a parameter to findAll method
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
@@ -81,7 +97,7 @@ public class UrlService {
 			return new ArrayList<UrlEntity>();
 		}
 	}
-
+	
 	//method to save or update the url
 	public UrlEntity createOrUpdateUrl(UrlEntity entity) {
 		
@@ -141,6 +157,20 @@ public class UrlService {
 		
 		if(url.isPresent()) {
 			return url.get().getUsageCount();
+		}else {
+			throw new RecordNotFoundException("Url not found : " +theUrl);
+		}
+	}
+	
+	public UrlEntity delete(String theUrl) throws RecordNotFoundException{
+		
+		//get the url
+		Optional<UrlEntity> url = getUrl(theUrl);
+		
+		//if url is present delete the url
+		if(url.isPresent()) {
+			repository.delete(url.get());
+			return url.get();
 		}else {
 			throw new RecordNotFoundException("Url not found : " +theUrl);
 		}

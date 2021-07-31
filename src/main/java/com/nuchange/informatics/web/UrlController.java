@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +27,21 @@ public class UrlController {
     @GetMapping("/list")
     public ResponseEntity<List<UrlEntity>> getAllUrls(
                         @RequestParam(defaultValue = "0") Integer page,
+                        @RequestParam(defaultValue = "10") Integer size) {
+    	
+        List<UrlEntity> list = service.getAllUrls(page, size);
+ 
+        return new ResponseEntity<List<UrlEntity>>
+        						(list, new HttpHeaders(), HttpStatus.OK);
+    }
+    
+    @GetMapping("/sort")
+    public ResponseEntity<List<UrlEntity>> getAllUrlsBySort(
+                        @RequestParam(defaultValue = "0") Integer page,
                         @RequestParam(defaultValue = "10") Integer size,
                         @RequestParam(defaultValue = "id") String sortBy) {
     	
-        List<UrlEntity> list = service.getAllUrls(page, size, sortBy);
+        List<UrlEntity> list = service.getAllUrlsBySort(page, size, sortBy);
  
         return new ResponseEntity<List<UrlEntity>>
         						(list, new HttpHeaders(), HttpStatus.OK);
@@ -58,4 +70,10 @@ public class UrlController {
 
     }
     
+    @DeleteMapping("/delete")
+    public UrlEntity delete(@RequestParam String url)
+                    							throws RecordNotFoundException {
+    	return service.delete(url);
+
+    }
 }
